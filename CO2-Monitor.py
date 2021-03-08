@@ -1,38 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[11]:
-
-
-deviceName = "/dev/co2mini7"
-logFile = "./minmonlog.csv"
-secondsBetweenLogs = 3600
-
-
-# In[12]:
-
+#!/usr/bin/python3
 
 import sys, fcntl, time
-
-
-# In[13]:
-
-
-def stime():
-    """Return current time as YYYY-MM-DD HH:MM:SS"""
-    return time.strftime("%Y-%m-%d %H:%M:%S")
-
-def appendToFile(filename, writestring):
-    """Write-Append data; add linefeed"""
-
-    with open(filename, 'at', encoding="UTF-8", errors='replace', buffering = 1) as f:
-        f.write((writestring + "\n"))
-
-
-# In[14]:
-
-
-
 
 def decrypt(key,  data):
     cstate = [0x48,  0x74,  0x65,  0x6D,  0x70,  0x39,  0x39,  0x65]
@@ -76,7 +44,6 @@ if __name__ == "__main__":
     
     values = {}
     co2 = temp = humid = float('nan')
-    lastTime = time.time()
     
     while True:
         #data = list(ord(e) for e in fp.read(8))
@@ -107,24 +74,4 @@ if __name__ == "__main__":
             if 0x42 in values:      temp  = values[0x42] / 16.0 - 273.15
             if 0x44 in values:      humid = values[0x44] / 100.0
                 
-            print("\t{:s} CO2: {:3.0f} ppm,  \tT: {:2.2f} °C".format(stime(), co2, temp))
-            
-            # Every secondsBetweenLogs seconds...
-            if(time.time() > lastTime + secondsBetweenLogs):
-                # Log to file
-                lastTime = time.time()
-                logstring = "{:s}, {:5.0f}, {:6.2f}".format(stime(), co2, temp)
-                appendToFile(logFile, logstring)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
+            print("\tCO2: {:3.0f} ppm,  \tT: {:2.2f} °C".format(co2, temp))
